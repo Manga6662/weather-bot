@@ -1,0 +1,16 @@
+name: Weather Bot Scanner
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+jobs:
+  scan-and-generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: pip install requests edge-tts matplotlib
+      - run: python bot.py
+      - run: curl -X POST ${{ secrets.RENDER_UPLOAD_URL }} -F "map=@map.jpg" -F "audio=@audio.mp3" -F "meta=@meta.json" || echo "No alert"
